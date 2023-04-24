@@ -5,13 +5,26 @@
 
 ### Устанавливаем пакеты
 
+snmp
+
     sudo apt install snmp
+
+snmpd
+
     sudo apt install snmpd
+
+snmptrad
+
     sudo apt install snmptrapd
 
 ### Останавливаем сервисы snmp
 
+snmpd.service
+
     sudo systemctl stop snmpd.service
+    
+snmptrapd.socket
+
     sudo systemctl stop snmptrapd.socket
 
 ### Настраиваем snmptrapd
