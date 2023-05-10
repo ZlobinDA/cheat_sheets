@@ -37,19 +37,28 @@ snmptrapd.socket
 
 #### SNMPv3
 
-    createUser -e 0x8000123acd1ab43abbfff000fa myUser SHA mySecureAuthPassword AES mySecurePrivPass    authUser log,execute myUser
+noAuthNoPriv
+
+    createUser -e 0x0102030405 user1
+    authUser log,execute user1 noauth
+
+authNoPriv
+
+    createUser -e 0x0203040506 user2 SHA authPass
+    authUser log,execute user2
+
+authPriv
+
+    createUser -e 0x0304050607 user3 SHA authPass AES privPass
+    authUser log,execute user3
 
 ### Запускаем snmptrapd вручную
 
     sudo snmptrapd -f -L o
 
-запуск с выводом всей отладочной информации
+-D - запуск с выводом всей отладочной информации
 
-    sudo snmptrapd -D -f -L o
-
-запуск с выводом информации об авторизации пользователя
-
-    sudo snmptrapd -Dusm -f -L o
+-Dusm - запуск с выводом информации об авторизации пользователя
 
 В новом терминале проверяем статус и конфигурацию smpd
 
@@ -69,12 +78,19 @@ snmptrapd.socket
 
 #### SNMPv3
 
-snmptrap -e 0x8000123acd1ab43abbfff000fa -v 3 -u myUser -a SHA -A mySecureAuthPassword -x AES -XmySecurePrivPassword -l authPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+noAuthNoPriv
+
+    snmptrap -e 0x0102030405 -v 3 -u user1 -l noAuthNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+
+authNoPriv
+
+    snmptrap -e 0x0203040506 -v 3 -u user2 -a SHA -A authPass -l authNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+
+authPriv
+
+    snmptrap -e 0x0304050607 -v 3 -u user3 -a SHA -A authPass -x AES -X privPass -l authPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
 
 
 В терминале с запущенным snmptrapd подтверждаем получение сигнала.
 
-### Тестовый сигнал на удаленный хост
-На удаленном хосте должен быть запущен snmptrapd
 
-    sudo snmptrap -c public -v 2c <ip> "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "Remote trap test" 
