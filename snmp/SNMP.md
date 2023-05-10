@@ -28,16 +28,28 @@ snmptrapd.socket
     sudo systemctl stop snmptrapd.socket
 
 ### Настраиваем snmptrapd
-#### SNMPv2
-В конфигурационном файле /etc/snmp/snmptrapd.conf нужно раскомментировать (или добавить) строку
+
+В конфигурационном файле /etc/snmp/snmptrapd.conf нужно добавить строки
+
+#### SNMPv2c
 
     authCommunity log,execute,net public
+
 #### SNMPv3
-    TODO
+
+    createUser -e 0x8000123acd1ab43abbfff000fa myUser SHA mySecureAuthPassword AES mySecurePrivPass    authUser log,execute myUser
 
 ### Запускаем snmptrapd вручную
 
     sudo snmptrapd -f -L o
+
+запуск с выводом всей отладочной информации
+
+    sudo snmptrapd -D -f -L o
+
+запуск с выводом информации об авторизации пользователя
+
+    sudo snmptrapd -Dusm -f -L o
 
 В новом терминале проверяем статус и конфигурацию smpd
 
@@ -51,11 +63,16 @@ snmptrapd.socket
 ### Локальный тестовый сигнал
 В новом терминале отправляем тестовый сигнал на себя
 
+#### SNMPv2c
+
     sudo snmptrap -c public -v 2c 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
 
-В терминале с запущенным snmptrapd подтверждаем получение сигнала.
+#### SNMPv3
 
-Warning: Вроде бы сигнал должен писаться в файл сислога /var/log/syslog, но у меня не пишется.
+snmptrap -e 0x8000123acd1ab43abbfff000fa -v 3 -u myUser -a SHA -A mySecureAuthPassword -x AES -XmySecurePrivPassword -l authPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+
+
+В терминале с запущенным snmptrapd подтверждаем получение сигнала.
 
 ### Тестовый сигнал на удаленный хост
 На удаленном хосте должен быть запущен snmptrapd
