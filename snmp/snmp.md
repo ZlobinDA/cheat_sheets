@@ -44,12 +44,12 @@ noAuthNoPriv
 
 authNoPriv
 
-    createUser -e 0x0203040506 user2 SHA authPass
+    createUser -e 0x0203040506 user2 SHA authPass123
     authUser log,execute user2
 
 authPriv
 
-    createUser -e 0x0304050607 user3 SHA authPass AES privPass
+    createUser -e 0x0304050607 user3 SHA authPass123 AES privPass123
     authUser log,execute user3
 
 ### Запускаем snmptrapd вручную
@@ -74,21 +74,21 @@ authPriv
 
 #### SNMPv2c
 
-    sudo snmptrap -c public -v 2c 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+    sudo snmptrap -c public -v 2c 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "v2c TRAP"
 
 #### SNMPv3
 
 noAuthNoPriv
 
-    snmptrap -e 0x0102030405 -v 3 -u user1 -l noAuthNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+    snmptrap -e 0x0102030405 -v 3 -u user1 -l noAuthNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "v3 noAuthNoPriv TRAP"
 
 authNoPriv
 
-    snmptrap -e 0x0203040506 -v 3 -u user2 -a SHA -A authPass -l authNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+    snmptrap -e 0x0203040506 -v 3 -u user2 -a SHA -A authPass123 -l authNoPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "v3 authNoPriv TRAP"
 
 authPriv
 
-    snmptrap -e 0x0304050607 -v 3 -u user3 -a SHA -A authPass -x AES -X privPass -l authPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "My First TRAP"
+    snmptrap -e 0x0304050607 -v 3 -u user3 -a SHA -A authPass123 -x AES -X privPass123 -l authPriv 127.0.0.1 "" 1.3.3.3.3.3.3.3 1.2.2.2.2.2.2 s "v3 authPriv TRAP"
 
 
 В терминале с запущенным snmptrapd подтверждаем получение сигнала.
