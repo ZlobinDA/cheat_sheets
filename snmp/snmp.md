@@ -54,7 +54,7 @@ authPriv
 
 ### Запускаем snmptrapd вручную
 
-    sudo snmptrapd -f -L o
+    sudo snmptrapd -Dusm -f -L o
 
 -D - запуск с выводом всей отладочной информации
 
